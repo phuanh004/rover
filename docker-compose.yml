@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  hello-world:
+    build: ./flask
+    ports:
+      - 3000:3000
+    devices:
+      - /dev/gpiomem:/dev/gpiomem
