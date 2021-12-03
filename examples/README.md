@@ -5,7 +5,7 @@
 1. Rename .env.example to .env
 
 ```bash
-mv .env.example .env
+mv .env.example sensors/.env
 ```
 
 2. Run
