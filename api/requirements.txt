@@ -1,1 +1,4 @@
+adafruit-circuitpython-dht==3.7.0
+gpiozero==1.6.2
 quart==0.16.1
+python-dotenv==0.19.2
