@@ -3,6 +3,7 @@ import board
 import os
 from dotenv import load_dotenv
 from quart import Quart
+from quart_cors import cors
 
 # Load environment
 load_dotenv()
@@ -15,6 +16,7 @@ dhtDevice = SENSOR_TYPE(SENSOR_GPIO)
 
 # Quart App
 app = Quart(__name__)
+app = cors(app, allow_origin="*")
 
 
 @app.route('/temperature')
