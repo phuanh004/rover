@@ -1,3 +1,13 @@
+## First time install / One time install
+
+Install nodejs
+
+```bash
+# Using Debian, as root
+curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+apt-get install -y nodejs
+```
+
 ## Get started
 
 Install the dependencies...
