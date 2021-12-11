@@ -1,9 +1,12 @@
 import adafruit_dht
+import asyncio
 import board
 import os
 from dotenv import load_dotenv
 from quart import Quart
 from quart_cors import cors
+from models.Rover import Rover
+from models.Direction import Direction
 
 # Load environment
 load_dotenv()
@@ -34,6 +37,37 @@ async def temperature():
 async def humidity():
     humid = dhtDevice.humidity
     return {"humidity": humid}
+
+
+# Rover
+rover = Rover()
+running = False
+
+
+@app.route('/rover/start')
+async def start_rover():
+    global running
+    global rover
+    running = True
+
+    while True:
+        if rover.in_range():
+            rover.vision.when_in_range = rover.avoid_hazard()
+            await asyncio.sleep(.1)
+
+        await rover.move(direction=Direction.FORWARD)
+        return {"rover": "rover started"}
+
+
+@app.route('/rover/stop')
+async def stop_rover():
+    global running
+    global rover
+    await rover.stop()
+    running = False
+
+    return {"rover": "rover stopped"}
+
 
 # Main
 if __name__ == '__main__':

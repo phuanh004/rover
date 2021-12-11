@@ -1,26 +1,12 @@
 import asyncio
-from gpiozero import Robot
+from Direction import Direction
+from gpiozero import Robot, DistanceSensor
+from Motor import Motor
 import os
 from dotenv import load_dotenv
-from enum import Enum
 import random
 
 load_dotenv()
-
-
-class Motor:
-    FWD_SPD = 1
-    BKWD_SPD = .4
-    SPIN_TURN_SPD = BKWD_SPD * 1.75
-    CURVE_SPD = 1
-    DISTANCE_SENSOR_TRIGGER = 0.3
-
-
-class Direction(Enum):
-    FORWARD = "fwd"
-    BACKWARD = "bwd"
-    BACKWARD_LEFT = "bwd_l"
-    BACKWARD_RIGHT = "bwd_r"
 
 
 class Rover:
@@ -31,33 +17,37 @@ class Rover:
             (os.getenv('MOTO_A_FR'), os.getenv(
                 'MOTO_A_RR'), os.getenv('MOTO_A_PWMR'))
         )
+        self.vision = DistanceSensor(os.getenv('ECHO'), os.getenv(
+            'TRIG'), max_distance=1, threshold_distance=.3)
 
     async def move(self, direction: Direction):
-        if(direction.FORWARD):
+        if direction.FORWARD:
             self.rover.forward(Motor.FWD_SPD)
-        elif(direction.BACKWARD):
-            self.rover.backward(Motor.BKWD_SPD)
-        elif(direction.BACKWARD_LEFT):
+        elif direction.BACKWARD:
+            self.rover.backward(Motor.RWD_SPD)
+        elif direction.BACKWARD_LEFT:
             self.rover.backward(Motor.SPIN_TURN_SPD,
                                 curve_left=Motor.CURVE_SPD)
-        elif(direction.BACKWARD_RIGHT):
+        elif direction.BACKWARD_RIGHT:
             self.rover.backward(Motor.SPIN_TURN_SPD,
                                 curve_right=Motor.CURVE_SPD)
         else:
-            self.stop
+            await self.stop()
 
-    async def avoid_hazzard(self):
-        self.stop
+    async def avoid_hazard(self):
+        await self.stop()
         await asyncio.sleep(.5)
         rand_binary = random.random() < 0.5
 
-        if(rand_binary):
-            self.move(Direction.BACKWARD_LEFT)
+        if rand_binary:
+            await self.move(Direction.BACKWARD_LEFT)
         else:
-            self.move(Direction.BACKWARD_RIGHT)
+            await self.move(Direction.BACKWARD_RIGHT)
 
-        self.sensor.when_in_range = self.stop  # when_in_range is builtin method
-        await asyncio.sleep(.1)
+        await asyncio.sleep(.5)
+
+    def in_range(self):
+        return self.vision.distance < Motor.DISTANCE_SENSOR_TRIGGER
 
     async def stop(self):
-        self.rover.stop
+        self.rover.stop()
