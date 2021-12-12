@@ -5,8 +5,8 @@ import os
 from dotenv import load_dotenv
 from quart import Quart
 from quart_cors import cors
-from models.Rover import Rover
-from models.Direction import Direction
+from models.rover import Rover
+from models.direction import Direction
 
 # Load environment
 load_dotenv()

@@ -1,4 +1,3 @@
-@ -0,0 +1,52 @@
 from gpiozero import Robot, DistanceSensor
 from time import sleep
 import random
@@ -14,13 +13,12 @@ TSPD = BSPD * 1.75
 CSPD = 1
 
 # distance sensor
-sensor = DistanceSensor(os.getenv('ECHO'), os.getenv(
-	'TRIG'), max_distance=1, threshold_distance=.3)
+sensor = DistanceSensor(os.getenv('ECHO'), os.getenv('TRIG'), max_distance=1, threshold_distance=.3)
 
 # robot object:pins are forward, reverse left, then right
 rover = Robot(
 	(os.getenv('MOTOR_A_FL'), os.getenv('MOTOR_A_RL'), os.getenv('MOTOR_A_PWML')),
-	(os.getenv('MOTO_A_FR'), os.getenv('MOTO_A_RR'), os.getenv('MOTO_A_PWMR'))
+	(os.getenv('MOTOR_B_FR'), os.getenv('MOTOR_B_RR'), os.getenv('MOTOR_B_PWMR'))
 )
 
 # function for obstacle avoidance
