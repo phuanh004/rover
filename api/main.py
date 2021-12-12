@@ -5,8 +5,8 @@ import os
 from dotenv import load_dotenv
 from quart import Quart
 from quart_cors import cors
-from api.models.rover import Rover
-from api.models.direction import Direction
+from models.rover import Rover
+from models.direction import Direction
 
 # Load environment
 load_dotenv()
@@ -72,4 +72,4 @@ async def stop_rover():
 # Main
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
-    app.debug = True
+    app.debug(True)
