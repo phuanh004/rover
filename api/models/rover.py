@@ -1,7 +1,7 @@
 import asyncio
-from . import Direction
+from .direction import Direction
 from gpiozero import Robot, DistanceSensor
-from . import Motor
+from .motor import Motor
 import os
 from dotenv import load_dotenv
 import random
