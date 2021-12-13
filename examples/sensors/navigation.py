@@ -42,7 +42,7 @@ def avoid():
 
 def main():
 	while True:
-		if sensor.distance > 1:
+		if sensor.distance > 0.3:
 			rover.forward(FSPD)
 		sensor.when_in_range = avoid  # when_in_range is builtin method
 		sleep(.1)
