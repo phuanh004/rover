@@ -52,10 +52,11 @@ async def start_rover():
     running = True
 
     while True:
-        rover.move(direction=Direction.FORWARD)
         if rover.in_range():
             rover.avoid_hazard()
-            sleep(.5)
+        rover.move(Direction.FORWARD)
+        sleep(.5)
+
         # return {"rover": "rover started"}
 
 
