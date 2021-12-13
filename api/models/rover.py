@@ -54,7 +54,7 @@ class Rover:
 
 
     def in_range(self):
-        return sensor.distance > Motor.DISTANCE_SENSOR_TRIGGER
+        return sensor.distance < Motor.DISTANCE_SENSOR_TRIGGER
 
     def stop(self):
         self.rv.stop()
