@@ -11,7 +11,8 @@ load_dotenv("../.env")
 
 class Rover:
     def __init__(self) -> None:
-        print(os.getenv('MOTOR_A_FL'))
+        print(os.getenv('DISTANCE_SENSOR_ECHO'))
+        print(os.getenv('DISTANCE_SENSOR_TRIG'))
         self.rv = Robot(
             (os.getenv('MOTOR_A_FL'), os.getenv(
                 'MOTOR_A_RL'), os.getenv('MOTOR_A_PWML')),
@@ -21,7 +22,7 @@ class Rover:
         self.vision = DistanceSensor(os.getenv('DISTANCE_SENSOR_ECHO'), os.getenv(
             'DISTANCE_SENSOR_TRIG'), max_distance=1, threshold_distance=.3)
 
-    async def move(self, direction: Direction):
+    def move(self, direction: Direction):
         if direction.FORWARD:
             self.rv.forward(Motor.FWD_SPD)
         elif direction.BACKWARD:
@@ -33,22 +34,20 @@ class Rover:
             self.rv.backward(Motor.SPIN_TURN_SPD,
                              curve_right=Motor.CURVE_SPD)
         else:
-            await self.stop()
+            self.stop()
 
-    async def avoid_hazard(self):
-        await self.stop()
-        await asyncio.sleep(.5)
+    def avoid_hazard(self):
+        self.stop()
         rand_binary = random.random() < 0.5
 
         if rand_binary:
-            await self.move(Direction.BACKWARD_LEFT)
+            self.move(Direction.BACKWARD_LEFT)
         else:
-            await self.move(Direction.BACKWARD_RIGHT)
+            self.move(Direction.BACKWARD_RIGHT)
 
-        await asyncio.sleep(.5)
 
     def in_range(self):
         return self.vision.distance < Motor.DISTANCE_SENSOR_TRIGGER
 
-    async def stop(self):
+    def stop(self):
         self.rv.stop()
