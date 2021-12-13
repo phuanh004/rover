@@ -5,6 +5,7 @@ from .motor import Motor
 import os
 from dotenv import load_dotenv
 import random
+from time import sleep
 
 load_dotenv("../.env")
 
@@ -39,11 +40,15 @@ class Rover:
     def avoid_hazard(self):
         self.stop()
         rand_binary = random.random() < 0.5
+        print("rand_binary")
 
         if rand_binary:
             self.move(Direction.BACKWARD_LEFT)
+            print("backwardleft")
         else:
             self.move(Direction.BACKWARD_RIGHT)
+            print("backwardright")
+        sleep(.5)   
 
 
     def in_range(self):

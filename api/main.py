@@ -7,6 +7,7 @@ from quart import Quart
 from quart_cors import cors
 from models.rover import Rover
 from models.direction import Direction
+from time import sleep
 
 # Load environment
 load_dotenv()
@@ -52,18 +53,18 @@ async def start_rover():
 
     while True:
         if rover.in_range():
-            rover.vision.when_in_range = rover.avoid_hazard()
-            await asyncio.sleep(.1)
+            rover.avoid_hazard()
+            sleep(.1)
 
-        await rover.move(direction=Direction.FORWARD)
-        return {"rover": "rover started"}
+        rover.move(direction=Direction.FORWARD)
+        # return {"rover": "rover started"}
 
 
 @app.route('/rover/stop')
 async def stop_rover():
     global running
     global rover
-    await rover.stop()
+    rover.stop()
     running = False
 
     return {"rover": "rover stopped"}
