@@ -34,7 +34,14 @@
                     color="rgb(231,192,96)"
                 />
             </div>
-            <div class='column'></div>
+            <div class='column'>
+                <LineGraph
+                    label="Distance"
+                    api_obj_name="distance"
+                    src="ws://{HOST_NAME}:{PORT}/distance"
+                    color="rgb(231,192,96)"
+                />
+            </div>
         </div>
     </div>
 </main>
