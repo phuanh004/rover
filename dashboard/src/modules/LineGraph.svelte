@@ -7,9 +7,9 @@
   export let api_obj_name;
   export let color;
 
-  let labels = [];
+  // Data for the graph
   let data = {
-    labels: labels,
+    labels: [],
     datasets: [
       {
         label: label,
@@ -21,22 +21,37 @@
     ],
   };
 
-  onMount(async () => {
-    async function fetchData() {
-      src,
-        {
-          mode: "cors",
-        };
-      const req = await fetch(src, { mode: "cors" });
-      const res = await req.json();
-
-      addPointTempToGraph(res[api_obj_name]);
+  // Interactive values
+  $: average = getDataAverage(data);
+  const getDataAverage = (data) => {
+    let avg = 0
+    if (data.datasets[0].data.length > 0) {
+      avg = data.datasets[0].data.reduce((a, b) => a+ b) / data.datasets[0].data.length
     }
 
-    const interval = setInterval(fetchData, 1000);
-    fetchData();
+    return avg
+  }
 
-    return () => clearInterval(interval);
+  // Web socket running
+  function startWebsocket() {
+    const ws = new WebSocket(src)
+
+    ws.onmessage = function(event){
+      let res = JSON.parse(event.data)
+      let data_point = res.result ?? null
+
+      if (data_point) {
+        addPointTempToGraph(data_point[api_obj_name]);
+      }
+    }
+
+    ws.onclose = function(){
+      setTimeout(startWebsocket, 5000)
+    }
+  }
+
+  onMount(async () => {
+    startWebsocket()
   });
 
   const addPointTempToGraph = (point) => {
@@ -47,11 +62,14 @@
 
 <div class="graph">
   <Line {data} />
+  <div class="info">
+    <p class="average text-center">Avg: {average ?? 0}</p>
+  </div>
 </div>
 
 <style scoped>
   .graph {
-    flex: 50%;
     width: 100%;
+    flex: 1;
   }
 </style>
