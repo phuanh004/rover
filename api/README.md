@@ -5,7 +5,7 @@
 1. Rename .env.example to .env
 
 ```bash
-mv .env.example .env
+cp .env.example .env
 ```
 
 2. Install dependencies

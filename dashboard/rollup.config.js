@@ -1,4 +1,5 @@
 import svelte from "rollup-plugin-svelte";
+import sveltePreprocess from 'svelte-preprocess'
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
@@ -45,9 +46,16 @@ export default {
   },
   plugins: [
     replace({
-      HOST_NAME: JSON.stringify(process.env.HOST_NAME),
+      PI_HOST_NAME: JSON.stringify(process.env.PI_HOST_NAME),
+      PI_PORT: JSON.stringify(process.env.PI_PORT),
     }),
     svelte({
+      preprocess: sveltePreprocess({
+        sourceMap: !production,
+        postcss: {
+          plugins: [require('tailwindcss'), require('autoprefixer')()],
+        },
+      }),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,

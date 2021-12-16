@@ -1,43 +1,30 @@
 <script>
-  import LineGraph from "./modules/LineGraph.svelte";
 
-  const HOSTNAME = HOST_NAME;
+  import Dashboard from "./Dashboard.svelte";
+  import RoverController from "./RoverController.svelte";
+
+  export let menu = 1;
 </script>
 
-<main>
-  <div class="container">
-    <LineGraph
-      label="Temperature"
-      api_obj_name="temp_c"
-      src="http://${HOSTNAME}:5001/temperature"
-      color="rgb(247, 85, 144)"
-    />
-
-    <LineGraph
-      label="Humidity"
-      api_obj_name="humidity"
-      src="http://${HOSTNAME}:5001/humidity"
-      color="rgb(1, 167, 194)"
-    />
+<nav class="bg-white shadow dark:bg-gray-800">
+  <div class="container flex items-center p-6 text-gray-600 capitalize dark:text-gray-300">
+    <a href="/" on:click|preventDefault={() => (menu = 1)} class="text-gray-800 dark:text-gray-200 border-b-2 border-black-500 mx-1.5 sm:mx-6">Dashboard</a>
+    <a href="/" on:click|preventDefault={() => (menu = 2)} class="hover:text-gray-800 dark:hover:text-gray-200 hover:border-black-500 mx-1.5 sm:mx-6">Rover Controller</a>
   </div>
-</main>
+</nav>
 
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
+{#if menu === 1}
+  <Dashboard />
+{:else if menu === 2}
+  <RoverController />
+{:else}
+  <h1>
+    Page Not Found
+  </h1>
+{/if}
 
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
+<style lang="postcss" global>
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
 </style>
