@@ -1,19 +1,13 @@
 # Weather Station on Rover
 
-### Docker Install
-
-[Install Docker Engine on Debian | Docker Documentation](https://docs.docker.com/engine/install/debian/)
-
 ### How to run project
 
-1. Build
+1. Server
 
-```bash
-docker-compose build
+```text
+Updating...
 ```
 
-2. Run
+2. Dashboard
 
-```
-docker-compose up -d
-```
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fphuanh004%2Frover%2Ftree%2Fmain%2Fdashboard&env=PI_HOST_NAME,PI_PORT)
