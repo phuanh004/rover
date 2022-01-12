@@ -3,11 +3,12 @@ import asyncio
 import board
 import os
 from dotenv import load_dotenv
-from quart import Quart, websocket
-from gpiozero import DistanceSensor, Robot
-
-from time import sleep
 import json
+from gpiozero import DistanceSensor
+
+from direction import Direction
+from quart import Quart, websocket
+from rover import Rover
 
 # Load environment
 load_dotenv()
@@ -15,10 +16,7 @@ load_dotenv()
 SENSOR_TYPE = getattr(adafruit_dht, os.getenv("TEMP_SENSOR_TYPE"))
 SENSOR_GPIO = getattr(board, os.getenv("TEMP_SENSOR_GPIO"))
 
-rv = Robot(
-    (os.getenv("MOTOR_A_FL"), os.getenv("MOTOR_A_RL"), os.getenv("MOTOR_A_PWML")),
-    (os.getenv("MOTOR_B_FR"), os.getenv("MOTOR_B_RR"), os.getenv("MOTOR_B_PWMR")),
-)
+rv = Rover()
 
 # distance sensor
 sensor = DistanceSensor(
@@ -45,7 +43,8 @@ async def temperature():
     while True:
         await websocket.send(
             json.dumps(
-                {"error": "", "result": {"temperature_c": earth_data[device_attribute]}}
+                {"error": "", "result": {
+                    "temperature_c": earth_data[device_attribute]}}
             )
         )
         earth_data[device_attribute] = get_dht_device_value(device_attribute)
@@ -106,9 +105,23 @@ async def rove_move():
     while True:
         cmd = await websocket.receive()
         if cmd == "left":
-            rv.forward(0.4 * 1.75, curve_left=1)
+            rv.move(Direction.FORWARD_LEFT)
+        elif cmd == "right":
+            rv.move(Direction.FORWARD_RIGHT)
         else:
-            rv.forward(1)
+            rv.move(Direction.FORWARD)
+
+
+@app.websocket("/rover/move/backward")
+async def rove_move():
+    while True:
+        cmd = await websocket.receive()
+        if cmd == "left":
+            rv.move(Direction.BACKWARD_LEFT)
+        elif cmd == "right":
+            rv.move(Direction.BACKWARD_RIGHT)
+        else:
+            rv.move(Direction.BACKWARD)
 
 
 def get_dht_device_value(device_attr):
