@@ -6,32 +6,41 @@
 
   $: msg = "";
 
-  let ws = null;
+  let ws_fwd,
+    ws_bwd = null;
   let key;
 
   function handleKeydown(event) {
     key = event.key;
 
+    // console.log(event.key);
+
     switch (event.key) {
       case "ArrowUp":
         msg = "Going straight";
-        ws?.send("fwd");
+        ws_fwd?.send("fwd");
         break;
 
       case "ArrowLeft":
         msg = "Turning Left";
-        ws?.send("left");
+        ws_fwd?.send("left");
         break;
 
       case "ArrowRight":
         msg = "Turning Right";
-        ws?.send("right");
+        ws_fwd?.send("right");
+        break;
+
+      case "ArrowDown":
+        msg = "Backing Up";
+        ws_bwd?.send("bwd");
         break;
     }
   }
 
   onMount(async () => {
-    ws = new WebSocket(`ws://${HOST_NAME}:${PORT}/rover/move/forward`);
+    ws_fwd = new WebSocket(`ws://${HOST_NAME}:${PORT}/rover/move/forward`);
+    ws_bwd = new WebSocket(`ws://${HOST_NAME}:${PORT}/rover/move/backward`);
   });
 </script>
 
