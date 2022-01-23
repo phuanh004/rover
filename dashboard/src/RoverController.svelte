@@ -13,8 +13,6 @@
   function handleKeydown(event) {
     key = event.key;
 
-    // console.log(event.key);
-
     switch (event.key) {
       case "ArrowUp":
         msg = "Going straight";
@@ -34,6 +32,11 @@
       case "ArrowDown":
         msg = "Backing Up";
         ws_bwd?.send("bwd");
+        break;
+
+      case "s":
+        msg = "Stoping";
+        ws_bwd?.send("stop");
         break;
     }
   }

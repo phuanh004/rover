@@ -101,7 +101,7 @@ async def distance():
 
 
 @app.websocket("/rover/move/forward")
-async def rove_move():
+async def rover_move_fwd():
     while True:
         cmd = await websocket.receive()
         if cmd == "left":
@@ -113,13 +113,15 @@ async def rove_move():
 
 
 @app.websocket("/rover/move/backward")
-async def rove_move():
+async def rover_move_bwd():
     while True:
         cmd = await websocket.receive()
         if cmd == "left":
             rv.move(Direction.BACKWARD_LEFT)
         elif cmd == "right":
             rv.move(Direction.BACKWARD_RIGHT)
+        elif cmd == "stop":
+            rv.stop()
         else:
             rv.move(Direction.BACKWARD)
 
