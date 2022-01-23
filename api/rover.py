@@ -20,18 +20,18 @@ class Rover:
         )
 
     def move(self, direction: Direction):
-        if direction.FORWARD:
+        if direction == direction.FORWARD:
             self.rv.forward(Motor.FWD_SPD)
-        elif direction.BACKWARD:
+        elif direction == direction.BACKWARD:
             self.rv.backward(Motor.RWD_SPD)
-        elif direction.FORWARD_LEFT:
-            self.rv.forward(Motor.SPIN_TURN_SPD, curve_left=Motor.CURVE_SPD)
-        elif direction.FORWARD_RIGHT:
-            self.rv.forward(Motor.SPIN_TURN_SPD, curve_right=Motor.CURVE_SPD)
-        elif direction.BACKWARD_LEFT:
+        elif direction == direction.FORWARD_LEFT:
+            self.rv.forward(curve_left=Motor.CURVE_SPD)
+        elif direction == direction.FORWARD_RIGHT:
+            self.rv.forward(curve_right=Motor.CURVE_SPD)
+        elif direction == direction.BACKWARD_LEFT:
             self.rv.backward(Motor.SPIN_TURN_SPD,
                              curve_left=Motor.CURVE_SPD)
-        elif direction.BACKWARD_RIGHT:
+        elif direction == direction.BACKWARD_RIGHT:
             self.rv.backward(Motor.SPIN_TURN_SPD,
                              curve_right=Motor.CURVE_SPD)
         else:
