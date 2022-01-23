@@ -10,8 +10,6 @@ load_dotenv()
 
 class Rover:
     def __init__(self) -> None:
-        print(os.getenv('DISTANCE_SENSOR_ECHO'))
-        print(os.getenv('DISTANCE_SENSOR_TRIG'))
         self.rv = Robot(
             (os.getenv('MOTOR_A_FL'), os.getenv(
                 'MOTOR_A_RL'), os.getenv('MOTOR_A_PWML')),

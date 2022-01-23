@@ -10,6 +10,13 @@ from direction import Direction
 from quart import Quart, websocket
 from rover import Rover
 
+import exixe
+import spidev
+import time
+import datetime
+import RPi.GPIO as GPIO
+from collections import deque
+
 # Load environment
 load_dotenv()
 
@@ -69,10 +76,84 @@ async def humidity():
 
 
 # TODO: Replace with radiation
+counts = deque()
+hundredcount = 0
+
+
+def countme(channel):
+    global counts, hundredcount
+    timestamp = datetime.datetime.now()
+    counts.append(timestamp)
+
+    # Every time we hit 100 counts, run count100 and reset
+    hundredcount = hundredcount + 1
+    if hundredcount >= 100:
+        hundredcount = 0
+        count100()
+
+# This method runs the servo to increment the mechanical counter
+
+
+def count100():
+    GPIO.setup(12, GPIO.OUT)
+    pwm = GPIO.PWM(12, 50)
+
+    pwm.start(4)
+    time.sleep(1)
+    pwm.start(9.5)
+    time.sleep(1)
+    pwm.stop()
+
+
+# Set the input with falling edge detection for geiger counter pulses
+GPIO.setup(4, GPIO.IN)
+GPIO.add_event_detect(4, GPIO.FALLING, callback=countme)
+
+# Initialize everything needed for the Exixe Nixie tube drivers
+spi = spidev.SpiDev()
+spi.open(0, 0)
+spi.max_speed_hz = 7800000
+
+cs_pin = 15
+cs_pin_m = 13
+cs_pin_r = 11
+
+my_tube = exixe.Exixe(cs_pin, spi)
+my_tube_m = exixe.Exixe(cs_pin_m, spi, overdrive=True)
+my_tube_r = exixe.Exixe(cs_pin_r, spi)
+
+my_tube.set_led(127, 28, 0)
+my_tube_m.set_led(127, 28, 0)
+my_tube_r.set_led(127, 28, 0)
+
+loop_count = 0
+
+
 @app.websocket("/radiation")
 async def radiation():
     device_attribute = "radiation"
+
+    global loop_count
+
     while True:
+        loop_count = loop_count + 1
+
+        try:
+            while counts[0] < datetime.datetime.now() - datetime.timedelta(seconds=60):
+                counts.popleft()
+        except IndexError:
+            pass  # there are no records in the queue.
+
+        if loop_count == 10:
+            earth_data[device_attribute] = int(len(counts))
+            loop_count = 0
+
+        # Update the displays with a zero-padded string
+        text_count = f"{len(counts):0>3}"
+        my_tube.set_digit(int(text_count[0]))
+        my_tube_m.set_digit(int(text_count[1]))
+        my_tube_r.set_digit(int(text_count[2]))
+
         await websocket.send(
             json.dumps(
                 {
@@ -81,7 +162,8 @@ async def radiation():
                 }
             )
         )
-        await asyncio.sleep(2)
+
+        await asyncio.sleep(1)
 
 
 @app.websocket("/distance")
