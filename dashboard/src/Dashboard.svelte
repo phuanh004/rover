@@ -4,12 +4,6 @@
 
   const HOST_NAME = PI_HOST_NAME;
   const PORT = PI_PORT;
-
-  let controller_appeard = false;
-
-  const trigger_controller = () => {
-    controller_appeard = !controller_appeard;
-  };
 </script>
 
 <main>
@@ -34,10 +28,6 @@
       color="rgb(231,192,96)"
     />
 
-    {#if controller_appeard}
-      <Controller />
-    {/if}
-
-    <button on:click={trigger_controller}>Controller</button>
+    <!-- <button on:click={trigger_controller}>Controller</button> -->
   </div>
 </main>

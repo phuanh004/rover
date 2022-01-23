@@ -35,7 +35,7 @@
         break;
 
       case "s":
-        msg = "Stoping";
+        msg = "Stopping";
         ws_bwd?.send("stop");
         break;
     }
@@ -49,25 +49,12 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div style="text-align: center">
-  {#if key}
-    <kbd>{key === " " ? "Space" : msg}</kbd>
-  {:else}
-    <p>Focus this window and press any key</p>
-  {/if}
+<div>
+  <div class="text-center text-3xl font-bold p-2">
+    {#if key}
+      <kbd>{key === " " ? "Space" : msg}</kbd>
+    {/if}
+  </div>
+  <p><span class="font-bold">Arrows keys</span>: rover directions</p>
+  <p><span class="font-bold">S</span>: stop</p>
 </div>
-
-<style>
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  kbd {
-    border-radius: 4px;
-    font-size: 4em;
-    padding: 0.2em 0.5em;
-  }
-</style>
