@@ -24,34 +24,36 @@
   // Interactive values
   $: average = getDataAverage(data);
   const getDataAverage = (data) => {
-    let avg = 0
+    let avg = 0;
     if (data.datasets[0].data.length > 0) {
-      avg = data.datasets[0].data.reduce((a, b) => a+ b) / data.datasets[0].data.length
+      avg =
+        data.datasets[0].data.reduce((a, b) => a + b) /
+        data.datasets[0].data.length;
     }
 
-    return avg
-  }
+    return Math.round(avg);
+  };
 
   // Web socket running
   function startWebsocket() {
-    const ws = new WebSocket(src)
+    const ws = new WebSocket(src);
 
-    ws.onmessage = function(event){
-      let res = JSON.parse(event.data)
-      let data_point = res.result ?? null
+    ws.onmessage = function (event) {
+      let res = JSON.parse(event.data);
+      let data_point = res.result ?? null;
 
       if (data_point) {
         addPointTempToGraph(data_point[api_obj_name]);
       }
-    }
+    };
 
-    ws.onclose = function(){
-      setTimeout(startWebsocket, 5000)
-    }
+    ws.onclose = function () {
+      setTimeout(startWebsocket, 5000);
+    };
   }
 
   onMount(async () => {
-    startWebsocket()
+    startWebsocket();
   });
 
   const addPointTempToGraph = (point) => {

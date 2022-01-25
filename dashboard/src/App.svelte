@@ -1,4 +1,6 @@
 <script>
+  import Camera from "./Camera.svelte";
+
   import Dashboard from "./Dashboard.svelte";
   import RoverController from "./RoverController.svelte";
 
@@ -39,7 +41,7 @@
 {#if menu === 1}
   <Dashboard />
 {:else if menu === 2}
-  <p>Spectra</p>
+  <Camera />
   <!-- <RoverController /> -->
 {:else}
   <h1>Page Not Found</h1>

@@ -5,9 +5,10 @@ import os
 from dotenv import load_dotenv
 import json
 from gpiozero import DistanceSensor
+from camera import Camera
 
 from direction import Direction
-from quart import Quart, websocket
+from quart import Quart, websocket, redirect, url_for
 from rover import Rover
 
 import exixe
@@ -24,6 +25,10 @@ SENSOR_TYPE = getattr(adafruit_dht, os.getenv("TEMP_SENSOR_TYPE"))
 SENSOR_GPIO = getattr(board, os.getenv("TEMP_SENSOR_GPIO"))
 
 rv = Rover()
+camera = Camera()
+
+# Camera
+camera.setup_default_settings()
 
 # distance sensor
 sensor = DistanceSensor(
@@ -42,6 +47,10 @@ app = Quart(__name__)
 # Earth data
 earth_data = {"temperature": 0, "humidity": 0, "radiation": 0}
 rover_data = {"distance": 100}
+
+'''
+' WEATHER
+'''
 
 
 @app.websocket("/temperature")
@@ -144,7 +153,7 @@ async def radiation():
         except IndexError:
             pass  # there are no records in the queue.
 
-        if loop_count == 10:
+        if loop_count == 2:
             earth_data[device_attribute] = int(len(counts))
             loop_count = 0
 
@@ -182,6 +191,11 @@ async def distance():
         await asyncio.sleep(0.2)
 
 
+'''
+' MOVING
+'''
+
+
 @app.websocket("/rover/move/forward")
 async def rover_move_fwd():
     while True:
@@ -206,6 +220,36 @@ async def rover_move_bwd():
             rv.stop()
         else:
             rv.move(Direction.BACKWARD)
+
+'''
+' CAMERA
+'''
+
+
+@app.route('/img/<filename>')
+def display_image(filename):
+    # print('display_image filename: ' + filename)
+    return redirect(url_for('static', filename='images/' + filename), code=301)
+
+
+@app.websocket("/rover/camera")
+async def cam():
+    while True:
+        cmd = await websocket.receive()
+
+        if cmd == "capture":
+            camera.capture(path='static/images/', name='capture')
+
+            await websocket.send(
+                json.dumps(
+                    {
+                        "error": "",
+                        "result": {"status": 200, "msg": 'Image saved'},
+                    }
+                ))
+
+        elif cmd == "delete":
+            os.remove("static/images/capture.jpg")
 
 
 def get_dht_device_value(device_attr):

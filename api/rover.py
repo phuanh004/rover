@@ -1,4 +1,3 @@
-import asyncio
 from direction import Direction
 from gpiozero import Robot
 from motor import Motor

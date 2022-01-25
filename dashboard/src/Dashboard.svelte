@@ -1,13 +1,12 @@
 <script>
   import LineGraph from "./modules/LineGraph.svelte";
-  import Controller from "./RoverController.svelte";
 
   const HOST_NAME = PI_HOST_NAME;
   const PORT = PI_PORT;
 </script>
 
 <main>
-  <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 pt-5">
     <LineGraph
       label="Temperature (°C)"
       api_obj_name="temperature_c"
@@ -27,7 +26,5 @@
       src="ws://{HOST_NAME}:{PORT}/radiation"
       color="rgb(231,192,96)"
     />
-
-    <!-- <button on:click={trigger_controller}>Controller</button> -->
   </div>
 </main>
