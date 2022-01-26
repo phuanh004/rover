@@ -249,7 +249,7 @@ async def cam():
                 ))
 
         elif cmd == "delete":
-            os.remove("static/images/capture.jpg")
+            os.remove(os.path.join('static/images/', 'capture.jpg'))
 
 
 def get_dht_device_value(device_attr):
