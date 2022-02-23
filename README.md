@@ -1,13 +1,28 @@
 # Weather Station on Rover
 
-### How to run project
+## Features
 
-1. Server
+1. Weather Report
 
-```text
-Updating...
-```
+![Weather Graph](assets/weather_graph.gif)
 
-2. Dashboard
+2. Rover Controller
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fphuanh004%2Frover%2Ftree%2Fmain%2Fdashboard&env=PI_HOST_NAME,PI_PORT)
+![Weather Graph](assets/rover_controller.gif)
+
+3. Taking Photo (or Spectroscope)
+
+![Spectro](assets/spectro.png)
+
+## Structure
+
+![Diagram](assets/technique.jpg)
+
+1. [Diagram](diagram)
+2. [API](api/README.md)
+3. [Dashboard](dashboard/README.md)
+
+## How to run project
+
+1. [Download and run "api" on the Rasp Pi](api/README.md)
+2. [Download and run "dashboard" on either Pi or your computer](dashboard/README.md)
